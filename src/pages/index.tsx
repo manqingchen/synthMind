@@ -9,9 +9,13 @@ export default function Home() {
   const { open } = useWeb3Modal();
   const { walletInfo } = useWalletInfo();
   const { disconnect } = useDisconnect();
-  console.log("walletInfo =================== ", walletInfo);
   const router = useRouter();
   useEffect(() => () => disconnect(), [disconnect]);
+  useEffect(() => {
+    if (walletInfo) {
+      router.push("/chat");
+    }
+  }, [router, walletInfo]);
   return (
     <main className="flex h-screen flex-col items-center justify-center">
       <Image src={logo} alt="logo" className="w-40 h-40" />
@@ -24,10 +28,7 @@ export default function Home() {
       </span>
       <button
         onClick={() => {
-          open({ view: "Connect" }).then((res) => {
-            // @ts-ignore
-            if (!!res) router.push("/chat");
-          });
+          open({ view: "Connect" });
         }}
         className="bg-black px-8 py-4 text-[#fff] mt-4"
       >
