@@ -2,12 +2,16 @@ import Image from "next/image";
 import logo from "@/assets/logo.jpg";
 import { useWalletInfo, useWeb3Modal } from "@web3modal/wagmi/react";
 import { useRouter } from "next/router";
+import { useDisconnect } from "wagmi";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { open, close } = useWeb3Modal();
+  const { open } = useWeb3Modal();
   const { walletInfo } = useWalletInfo();
+  const { disconnect } = useDisconnect();
+  console.log("walletInfo =================== ", walletInfo);
   const router = useRouter();
-  // console.log('walletInfo =================== ', walletInfo);
+  useEffect(() => () => disconnect(), [disconnect]);
   return (
     <main className="flex h-screen flex-col items-center justify-center">
       <Image src={logo} alt="logo" className="w-40 h-40" />
@@ -20,10 +24,10 @@ export default function Home() {
       </span>
       <button
         onClick={() => {
-          router.push("/chat");
-          // open({ view: "Connect" }).then((res) => {
-          //   console.log("res =================== ", res);
-          // });
+          open({ view: "Connect" }).then((res) => {
+            // @ts-ignore
+            if (!!res) router.push("/chat");
+          });
         }}
         className="bg-black px-8 py-4 text-[#fff] mt-4"
       >
@@ -32,4 +36,3 @@ export default function Home() {
     </main>
   );
 }
-
